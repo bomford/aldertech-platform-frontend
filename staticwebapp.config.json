@@ -2,7 +2,7 @@
   "routes": [
     {
       "route": "/api/*",
-      "rewrite": "https://app-aldertech-platform-api-a9ayaucgerezbwfr.australiaeast-01.azurewebsites.net/*",
+      "rewrite": "https://app-aldertech-platform-api-a9ayaucgerezbwfr.australiaeast-01.azurewebsites.net/api/*",
       "allowedRoles": ["authenticated"]
     }
   ]
