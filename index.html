@@ -2,33 +2,85 @@
 <html>
 <head>
   <title>Alder Technology Platform</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 20px;
+      margin: 40px;
+      background: #f9fafb;
+      color: #333;
     }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .button-group {
+      margin-bottom: 20px;
+    }
+
     button {
+      padding: 10px 16px;
       margin-right: 10px;
-      padding: 8px 12px;
+      border: none;
+      background: #0078d4;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
     }
+
+    button:hover {
+      background: #005ea6;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      max-width: 800px;
+    }
+
+    .status-success {
+      color: #107c10;
+      font-weight: 600;
+    }
+
+    .status-error {
+      color: #d13438;
+      font-weight: 600;
+    }
+
+    .label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
     pre {
       background: #f4f4f4;
       padding: 10px;
-      border-radius: 5px;
-      white-space: pre-wrap;
+      border-radius: 4px;
+      overflow-x: auto;
     }
   </style>
 </head>
+
 <body>
 
 <h1>Alder Technology Platform</h1>
 
-<button onclick="login()">Login</button>
-<button onclick="getUser()">Get User Info</button>
-<button onclick="callApi()">Call API</button>
+<div class="button-group">
+  <button onclick="login()">Login</button>
+  <button onclick="getUser()">Get User Info</button>
+  <button onclick="callApi()">Call API</button>
+</div>
 
-<h3>Output:</h3>
-<pre id="output">No data yet</pre>
+<div class="card">
+  <div id="output">
+    <p>No data yet.</p>
+  </div>
+</div>
 
 <script>
 
@@ -37,41 +89,63 @@ function login() {
   window.location.href = "/.auth/login/aad";
 }
 
-// 👤 Show logged in user
+// 👤 Get User Info
 async function getUser() {
+  const output = document.getElementById("output");
+
   try {
     const res = await fetch("/.auth/me");
     const data = await res.json();
 
-    document.getElementById("output").innerText =
-      "✅ Logged in user:\n\n" + JSON.stringify(data, null, 2);
+    const user = data.clientPrincipal;
+
+    output.innerHTML = `
+      <div class="status-success">Logged in successfully ✅</div>
+      <div class="label">User:</div>
+      <div>${user.userDetails}</div>
+
+      <div class="label">Roles:</div>
+      <div>${user.userRoles.join(", ")}</div>
+
+      <div class="label">Raw Data:</div>
+      <pre>${JSON.stringify(data, null, 2)}</pre>
+    `;
 
   } catch (err) {
-    document.getElementById("output").innerText =
-      "❌ Failed to get user:\n" + err;
+    output.innerHTML = `<div class="status-error">Failed to get user ❌</div>`;
   }
 }
 
-// 🔗 Call backend API (FIXED)
+// 🔗 Call API
 async function callApi() {
+  const output = document.getElementById("output");
+
   try {
     const response = await fetch("/api/test", {
       method: "GET",
       credentials: "include"
     });
 
-    if (!response.ok) {
-      throw new Error(`API returned status ${response.status}`);
-    }
-
     const data = await response.json();
 
-    document.getElementById("output").innerText =
-      "✅ API Response:\n\n" + JSON.stringify(data, null, 2);
+    output.innerHTML = `
+      <div class="status-success">API call successful ✅</div>
+
+      <div class="label">Message:</div>
+      <div>${data.message}</div>
+
+      <div class="label">Timestamp:</div>
+      <div>${data.timestamp || "N/A"}</div>
+
+      <div class="label">Full Response:</div>
+      <pre>${JSON.stringify(data, null, 2)}</pre>
+    `;
 
   } catch (err) {
-    document.getElementById("output").innerText =
-      "❌ API call failed:\n" + err;
+    output.innerHTML = `
+      <div class="status-error">API call failed ❌</div>
+      <pre>${err}</pre>
+    `;
   }
 }
 
