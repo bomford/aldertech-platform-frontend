@@ -32,39 +32,50 @@
 
 <script>
 
-// 🔐 Trigger login via Azure Static Web App auth
+// 🔐 Login
 function login() {
   window.location.href = "/.auth/login/aad";
 }
 
-// 👤 Get user identity from Static Web Apps auth
+// 👤 Show logged in user
 async function getUser() {
   try {
     const res = await fetch("/.auth/me");
     const data = await res.json();
-    document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+
+    document.getElementById("output").innerText =
+      "✅ Logged in user:\n\n" + JSON.stringify(data, null, 2);
+
   } catch (err) {
-    document.getElementById("output").innerText = "Error getting user: " + err;
+    document.getElementById("output").innerText =
+      "❌ Failed to get user:\n" + err;
   }
 }
 
-// 🔗 Call your backend API via SWA proxy
+// 🔗 Call backend API (FIXED)
 async function callApi() {
   try {
-    const response = await fetch("/api/", {
+    const response = await fetch("/api/test", {
       method: "GET",
       credentials: "include"
     });
 
-    const text = await response.text();
+    if (!response.ok) {
+      throw new Error(`API returned status ${response.status}`);
+    }
 
-    document.getElementById("output").innerText = text;
+    const data = await response.json();
+
+    document.getElementById("output").innerText =
+      "✅ API Response:\n\n" + JSON.stringify(data, null, 2);
+
   } catch (err) {
-    document.getElementById("output").innerText = "API call failed: " + err;
+    document.getElementById("output").innerText =
+      "❌ API call failed:\n" + err;
   }
 }
 
 </script>
- 
+
 </body>
 </html>
