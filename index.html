@@ -84,6 +84,10 @@
 
 <script>
 
+// ✅ Unicode check mark
+const check = "\u2705";
+const cross = "\u274C";
+
 // 🔐 Login
 function login() {
   window.location.href = "/.auth/login/aad";
@@ -96,11 +100,11 @@ async function getUser() {
   try {
     const res = await fetch("/.auth/me");
     const data = await res.json();
-
     const user = data.clientPrincipal;
 
     output.innerHTML = `
-      <div class="status-success">Logged in successfully ✅</div>
+      <div class="status-success">Logged in successfully ${check}</div>
+
       <div class="label">User:</div>
       <div>${user.userDetails}</div>
 
@@ -112,7 +116,9 @@ async function getUser() {
     `;
 
   } catch (err) {
-    output.innerHTML = `<div class="status-error">Failed to get user ❌</div>`;
+    output.innerHTML = `
+      <div class="status-error">Failed to get user ${cross}</div>
+    `;
   }
 }
 
@@ -126,10 +132,14 @@ async function callApi() {
       credentials: "include"
     });
 
+    if (!response.ok) {
+      throw new Error(`API returned ${response.status}`);
+    }
+
     const data = await response.json();
 
     output.innerHTML = `
-      <div class="status-success">API call successful ✅</div>
+      <div class="status-success">API call successful ${check}</div>
 
       <div class="label">Message:</div>
       <div>${data.message}</div>
@@ -143,7 +153,7 @@ async function callApi() {
 
   } catch (err) {
     output.innerHTML = `
-      <div class="status-error">API call failed ❌</div>
+      <div class="status-error">API call failed ${cross}</div>
       <pre>${err}</pre>
     `;
   }
