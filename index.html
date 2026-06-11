@@ -7,136 +7,73 @@
     body {
       font-family: Arial, sans-serif;
       margin: 40px;
-      background: #f9fafb;
-      color: #333;
-    }
-
-    h1 {
-      margin-bottom: 20px;
-    }
-
-    .button-group {
-      margin-bottom: 20px;
+      background: #f4f6f8;
     }
 
     button {
       padding: 10px 16px;
       margin-right: 10px;
-      border: none;
       background: #0078d4;
       color: white;
-      border-radius: 6px;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
-      font-weight: 500;
     }
 
     button:hover {
       background: #005ea6;
     }
 
-    .card {
+    #output {
+      margin-top: 20px;
+      padding: 15px;
       background: white;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      max-width: 800px;
-    }
-
-    .status-success {
-      color: #107c10;
-      font-weight: 600;
-    }
-
-    .status-error {
-      color: #d13438;
-      font-weight: 600;
-    }
-
-    .label {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    pre {
-      background: #f4f4f4;
-      padding: 10px;
-      border-radius: 4px;
-      overflow-x: auto;
+      border-radius: 6px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      white-space: pre-wrap;
     }
   </style>
 </head>
 
 <body>
 
-<h1>Alder Technology App</h1>
+<h2>Alder Technology Auth Test</h2>
 
-<div class="button-group">
-  <button onclick="login()">Login</button>
-  <button onclick="logout()">Logout</button>
-  <button onclick="getUser()">Get User Info</button>
-  <button onclick="callApi()">Call API</button>
-</div>
+<button onclick="login()">Login</button>
+<button onclick="logout()">Logout</button>
+<button onclick="checkUser()">Check User (.auth/me)</button>
+<button onclick="callApi()">Call API</button>
 
-<div class="card">
-  <div id="output">
-    <p>No data yet.</p>
-  </div>
-</div>
+<div id="output">No data yet</div>
 
 <script>
 
-const check = "\u2705";
-const cross = "\u274C";
-
-// ✅ LOGIN (Custom auth still uses this endpoint)
+// ✅ LOGIN
 function login() {
   window.location.href = "/.auth/login/aad";
 }
 
-// ✅ LOGOUT (important for testing)
+// ✅ LOGOUT
 function logout() {
   window.location.href = "/.auth/logout";
 }
 
-// ✅ GET USER INFO
-async function getUser() {
+// ✅ CHECK USER
+async function checkUser() {
   const output = document.getElementById("output");
 
   try {
     const res = await fetch("/.auth/me");
-    const data = await res.json();
+    const text = await res.text();
 
-    const user = data.clientPrincipal;
-
-    if (!user) {
-      output.innerHTML = `
-        <div class="status-error">Not logged in ${cross}</div>
-      `;
-      return;
-    }
-
-    output.innerHTML = `
-      <div class="status-success">Logged in ${check}</div>
-
-      <div class="label">User:</div>
-      <div>${user.userDetails}</div>
-
-      <div class="label">Roles:</div>
-      <div>${user.userRoles.join(", ")}</div>
-
-      <div class="label">Claims:</div>
-      <pre>${JSON.stringify(data, null, 2)}</pre>
-    `;
+    output.textContent = text;
 
   } catch (err) {
-    output.innerHTML = `
-      <div class="status-error">Failed to load user ${cross}</div>
-      <pre>${err}</pre>
-    `;
+    output.textContent = "ERROR:\n" + err;
   }
 }
 
-// ✅ API CALL (robust debug version)
+// ✅ CALL API
 async function callApi() {
   const output = document.getElementById("output");
 
@@ -147,30 +84,10 @@ async function callApi() {
 
     const text = await res.text();
 
-    try {
-      const data = JSON.parse(text);
-
-      output.innerHTML = `
-        <div class="status-success">API working ${check}</div>
-
-        <div class="label">Message:</div>
-        <div>${data.message}</div>
-
-        <div class="label">Full Response:</div>
-        <pre>${JSON.stringify(data, null, 2)}</pre>
-      `;
-    } catch {
-      output.innerHTML = `
-        <div class="status-error">API returned non-JSON ${cross}</div>
-        <pre>${text}</pre>
-      `;
-    }
+    output.textContent = text;
 
   } catch (err) {
-    output.innerHTML = `
-      <div class="status-error">API call failed ${cross}</div>
-      <pre>${err}</pre>
-    `;
+    output.textContent = "ERROR:\n" + err;
   }
 }
 
