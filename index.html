@@ -54,7 +54,7 @@
 
 <script>
 
-// ✅ LOGIN (SWA built-in)
+// ✅ LOGIN
 function login() {
   window.location.href = "/.auth/login/aad";
 }
@@ -64,7 +64,7 @@ function logout() {
   window.location.href = "/.auth/logout";
 }
 
-// ✅ CHECK USER SESSION
+// ✅ CHECK USER
 async function checkUser() {
   const output = document.getElementById("output");
 
@@ -79,14 +79,17 @@ async function checkUser() {
   }
 }
 
-// ✅ CALL BACKEND API
+// ✅ ✅ FIXED API CALL (IMPORTANT CHANGE)
 async function callApi() {
   const output = document.getElementById("output");
 
   try {
-    const res = await fetch("/api/test", {
-      credentials: "include"
-    });
+    const res = await fetch(
+      "https://app-aldertech-platform-api-a9ayaucgerezbwfr.australiaeast-01.azurewebsites.net/api/test",
+      {
+        method: "GET"
+      }
+    );
 
     const text = await res.text();
 
