@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Alder Technology App</title>
+  <title>Alder Technology Auth Test</title>
 
   <style>
     body {
@@ -10,9 +10,14 @@
       background: #f4f6f8;
     }
 
+    h2 {
+      margin-bottom: 20px;
+    }
+
     button {
       padding: 10px 16px;
       margin-right: 10px;
+      margin-bottom: 10px;
       background: #0078d4;
       color: white;
       border: none;
@@ -29,15 +34,16 @@
       padding: 15px;
       background: white;
       border-radius: 6px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
       white-space: pre-wrap;
+      font-family: monospace;
     }
   </style>
 </head>
 
 <body>
 
-<h2>Alder Technology Auth Test</h2>
+<h2>Alder Technology Auth Test (Simple Mode)</h2>
 
 <button onclick="login()">Login</button>
 <button onclick="logout()">Logout</button>
@@ -48,7 +54,7 @@
 
 <script>
 
-// ✅ LOGIN
+// ✅ LOGIN (SWA built-in)
 function login() {
   window.location.href = "/.auth/login/aad";
 }
@@ -58,7 +64,7 @@ function logout() {
   window.location.href = "/.auth/logout";
 }
 
-// ✅ CHECK USER
+// ✅ CHECK USER SESSION
 async function checkUser() {
   const output = document.getElementById("output");
 
@@ -66,14 +72,14 @@ async function checkUser() {
     const res = await fetch("/.auth/me");
     const text = await res.text();
 
-    output.textContent = text;
+    output.textContent = "User Info:\n\n" + text;
 
   } catch (err) {
     output.textContent = "ERROR:\n" + err;
   }
 }
 
-// ✅ CALL API
+// ✅ CALL BACKEND API
 async function callApi() {
   const output = document.getElementById("output");
 
@@ -84,10 +90,10 @@ async function callApi() {
 
     const text = await res.text();
 
-    output.textContent = text;
+    output.textContent = "API Response:\n\n" + text;
 
   } catch (err) {
-    output.textContent = "ERROR:\n" + err;
+    output.textContent = "API ERROR:\n" + err;
   }
 }
 
