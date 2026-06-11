@@ -72,6 +72,7 @@
 
 <div class="button-group">
   <button onclick="login()">Login</button>
+  <button onclick="logout()">Logout</button>
   <button onclick="getUser()">Get User Info</button>
   <button onclick="callApi()">Call API</button>
 </div>
@@ -84,13 +85,17 @@
 
 <script>
 
-// ✅ Unicode icons
 const check = "\u2705";
 const cross = "\u274C";
 
-// ✅ LOGIN (Simple auth)
+// ✅ LOGIN (Custom auth still uses this endpoint)
 function login() {
   window.location.href = "/.auth/login/aad";
+}
+
+// ✅ LOGOUT (important for testing)
+function logout() {
+  window.location.href = "/.auth/logout";
 }
 
 // ✅ GET USER INFO
@@ -100,6 +105,7 @@ async function getUser() {
   try {
     const res = await fetch("/.auth/me");
     const data = await res.json();
+
     const user = data.clientPrincipal;
 
     if (!user) {
@@ -118,18 +124,19 @@ async function getUser() {
       <div class="label">Roles:</div>
       <div>${user.userRoles.join(", ")}</div>
 
-      <div class="label">Raw Data:</div>
+      <div class="label">Claims:</div>
       <pre>${JSON.stringify(data, null, 2)}</pre>
     `;
 
   } catch (err) {
     output.innerHTML = `
       <div class="status-error">Failed to load user ${cross}</div>
+      <pre>${err}</pre>
     `;
   }
 }
 
-// ✅ API CALL (robust handling)
+// ✅ API CALL (robust debug version)
 async function callApi() {
   const output = document.getElementById("output");
 
