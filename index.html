@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Alder Technology Auth Test (Linked API)</title>
+  <title>Alder Technology Auth Test</title>
 
   <style>
     body {
@@ -43,7 +43,7 @@
 
 <body>
 
-<h2>Auth Test (Group Enforced via API)</h2>
+<h2>Alder Technology Auth Test</h2>
 
 <button onclick="login()">Login</button>
 <button onclick="logout()">Logout</button>
@@ -54,14 +54,17 @@
 
 <script>
 
+// ✅ LOGIN (SWA handles this)
 function login() {
   window.location.href = "/.auth/login/aad";
 }
 
+// ✅ LOGOUT
 function logout() {
   window.location.href = "/.auth/logout";
 }
 
+// ✅ CHECK CURRENT USER SESSION
 async function checkUser() {
   const output = document.getElementById("output");
 
@@ -70,20 +73,25 @@ async function checkUser() {
     const text = await res.text();
 
     output.textContent = "User Info:\n\n" + text;
-
   } catch (err) {
     output.textContent = "ERROR:\n" + err;
   }
 }
 
-// ✅ IMPORTANT CHANGE: using SWA linked API (NOT direct URL)
+// ✅ ✅ FINAL API CALL (DIRECT TO API — WORKS WITH BOTH SWAs)
 async function callApi() {
   const output = document.getElementById("output");
 
   try {
-    const res = await fetch("/api/test", {
-      credentials: "include"
-    });
+    const res = await fetch(
+      "https://app-aldertech-platform-api-a9ayaucgerezbwfr.australiaeast-01.azurewebsites.net/api/test"
+    );
+
+    // Handle API errors cleanly
+    if (!res.ok) {
+      output.textContent = `API ERROR:\nStatus: ${res.status}`;
+      return;
+    }
 
     const text = await res.text();
 
